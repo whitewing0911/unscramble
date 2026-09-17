@@ -3,367 +3,1217 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>영어 언스크램블 연습</title>
+<title>영어 언스크램블</title>
+
 <style>
-  :root{
-    --bg:#f4f7fb;
-    --card:#ffffff;
-    --text:#172033;
-    --muted:#6b7280;
-    --line:#dfe5ef;
-    --primary:#4263eb;
-    --primary-dark:#304dcc;
-    --good:#16803c;
-    --good-bg:#eaf8ef;
-    --bad:#c62828;
-    --bad-bg:#fff0f0;
-    --chip:#eef2ff;
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, "Noto Sans KR", sans-serif;
+  background: linear-gradient(135deg, #eef3ff, #f8fafc, #edf8f4);
+  color: #172033;
+}
+
+.app {
+  max-width: 1000px;
+  margin: auto;
+  padding: 28px 16px 48px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 22px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 36px;
+}
+
+.subtitle {
+  color: #6b7280;
+  margin: 0;
+}
+
+.badge {
+  background: #172033;
+  color: white;
+  border-radius: 20px;
+  padding: 9px 13px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.panel {
+  background: white;
+  border: 1px solid #dce3ef;
+  border-radius: 22px;
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 12px 35px rgba(34,52,84,.08);
+}
+
+.topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #6b7280;
+  letter-spacing: .5px;
+}
+
+.number {
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+.progress {
+  height: 8px;
+  background: #e8edf5;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 14px;
+}
+
+.progress div {
+  height: 100%;
+  background: linear-gradient(90deg, #4263eb, #5cdbb0);
+  transition: width .25s;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+button {
+  font: inherit;
+  font-weight: bold;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 15px;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+.primary {
+  background: #4263eb;
+  color: white;
+}
+
+.primary:hover {
+  background: #304dcc;
+}
+
+.secondary {
+  background: #e9eef7;
+  color: #26344d;
+}
+
+.tab {
+  background: #edf1f7;
+  color: #475569;
+}
+
+.tab.active {
+  background: #4263eb;
+  color: white;
+}
+
+.small {
+  padding: 9px 12px;
+  font-size: 13px;
+}
+
+.translation {
+  margin-top: 20px;
+  padding: 17px 18px;
+  background: #fff9e8;
+  border: 1px solid #f4df9c;
+  border-radius: 16px;
+  line-height: 1.8;
+}
+
+.translation .label {
+  color: #94701b;
+  margin-bottom: 5px;
+}
+
+.translation-text {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.section-title {
+  margin-top: 22px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.hint {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.answer-area {
+  min-height: 94px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 9px;
+  padding: 15px;
+  border-radius: 16px;
+  background: #f8fafc;
+  border: 1px solid #dce3ef;
+  margin-top: 10px;
+}
+
+.scrambled {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.chunk {
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  color: #243b83;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.chunk:hover {
+  background: #dfe6ff;
+}
+
+.chunk.used {
+  opacity: .35;
+}
+
+.chunk.answer {
+  background: #e8f7ef;
+  border-color: #a7dfbd;
+  color: #166534;
+}
+
+.actions {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.feedback {
+  display: none;
+  margin-top: 14px;
+  padding: 13px 15px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.feedback.good {
+  display: block;
+  background: #eaf8ef;
+  color: #16803c;
+}
+
+.feedback.bad {
+  display: block;
+  background: #fff0f0;
+  color: #c62828;
+}
+
+.type-row {
+  display: flex;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 14px 15px;
+  font: inherit;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.stat {
+  background: #f8fafc;
+  border: 1px solid #dce3ef;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.stat span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.stat strong {
+  display: block;
+  font-size: 25px;
+  margin-top: 5px;
+}
+
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.sentence-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.sentence-item {
+  border: 1px solid #dce3ef;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fbfcfe;
+  cursor: pointer;
+}
+
+.sentence-item strong {
+  margin-right: 8px;
+}
+
+.sentence-item small {
+  color: #6b7280;
+  line-height: 1.7;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media(max-width:600px) {
+  .app {
+    padding: 20px 12px 35px;
   }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:Arial,"Noto Sans KR",sans-serif;
-    color:var(--text);
-    background:linear-gradient(135deg,#eef3ff 0%,#f8fafc 55%,#edf8f4 100%);
-    min-height:100vh;
+
+  .panel {
+    padding: 16px;
+    border-radius: 18px;
   }
-  .app{max-width:1000px;margin:0 auto;padding:28px 16px 48px}
-  header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}
-  h1{font-size:clamp(25px,5vw,38px);margin:0 0 8px;letter-spacing:-1.2px}
-  .subtitle{color:var(--muted);margin:0;line-height:1.5}
-  .badge{background:#172033;color:white;border-radius:999px;padding:8px 12px;font-size:12px;white-space:nowrap}
-  .panel{
-    background:rgba(255,255,255,.94);
-    border:1px solid rgba(220,227,239,.9);
-    border-radius:22px;
-    box-shadow:0 12px 35px rgba(34,52,84,.08);
-    padding:22px;
-    margin-bottom:18px;
+
+  header {
+    display: block;
   }
-  .topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-  .label{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.5px}
-  .question-number{font-size:26px;font-weight:800;margin-top:5px}
-  .progress{height:8px;background:#e8edf5;border-radius:99px;overflow:hidden;margin-top:14px}
-  .progress>div{height:100%;background:linear-gradient(90deg,#4263eb,#5cdbb0);width:10%;transition:width .25s}
-  .mode-tabs{display:flex;gap:8px;margin:20px 0 0;flex-wrap:wrap}
-  button,select,input{font:inherit}
-  button{
-    border:0;cursor:pointer;border-radius:12px;padding:12px 15px;font-weight:700;
-    transition:transform .12s,background .12s,opacity .12s;
+
+  h1 {
+    font-size: 28px;
   }
-  button:active{transform:scale(.98)}
-  button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #a5b4fc;outline-offset:2px}
-  .tab{background:#edf1f7;color:#475569}
-  .tab.active{background:var(--primary);color:white}
-  .primary{background:var(--primary);color:white}
-  .primary:hover{background:var(--primary-dark)}
-  .secondary{background:#e9eef7;color:#26344d}
-  .danger{background:#fff0f0;color:#b42323}
-  .small{padding:9px 12px;font-size:13px}
-  .sentence-box{
-    margin-top:22px;padding:18px;border-radius:16px;background:#f8fafc;border:1px dashed #cbd5e1;
-    line-height:1.9;font-size:18px;
+
+  .badge {
+    display: inline-block;
+    margin-top: 12px;
   }
-  .hint{color:var(--muted);font-size:13px;margin-top:8px}
-  .answer-area{min-height:90px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:9px;padding:15px;border-radius:16px;background:#f8fafc;border:1px solid var(--line);margin-top:12px}
-  .chunk{
-    background:var(--chip);border:1px solid #c7d2fe;color:#243b83;border-radius:10px;padding:10px 12px;
-    font-size:15px;line-height:1.35;font-weight:700;
+
+  .translation-text {
+    font-size: 15px;
   }
-  .chunk:hover{background:#dfe6ff}
-  .chunk.used{opacity:.38;cursor:default}
-  .chunk.answer{background:#e8f7ef;border-color:#a7dfbd;color:#166534;cursor:pointer}
-  .chunk.answer:hover{background:#d8f1e2}
-  .scrambled{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
-  .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
-  .feedback{margin-top:14px;padding:13px 15px;border-radius:12px;font-size:14px;line-height:1.6;display:none}
-  .feedback.good{display:block;background:var(--good-bg);color:var(--good)}
-  .feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
-  .type-row{display:flex;gap:9px;margin-top:12px}
-  input[type=text]{
-    width:100%;min-width:0;border:1px solid #cbd5e1;border-radius:12px;padding:14px 15px;
-    background:white;color:var(--text);
+
+  .type-row {
+    flex-direction: column;
   }
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
-  .stat{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:14px}
-  .stat strong{display:block;font-size:24px;margin-top:5px}
-  .stat span{font-size:12px;color:var(--muted)}
-  .bottom{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:18px}
-  .list-panel summary{cursor:pointer;font-weight:800}
-  .sentence-list{display:grid;gap:8px;margin-top:16px}
-  .sentence-item{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fbfcfe}
-  .sentence-item strong{display:inline-block;margin-right:8px}
-  .sentence-item small{color:var(--muted);line-height:1.6}
-  .hidden{display:none!important}
-  @media(max-width:600px){
-    .app{padding:20px 12px 35px}
-    .panel{padding:16px;border-radius:18px}
-    header{display:block}
-    .badge{display:inline-block;margin-top:12px}
-    .sentence-box{font-size:16px;padding:14px}
-    .stats{gap:7px}
-    .stat{padding:11px}
-    .stat strong{font-size:21px}
-    .type-row{flex-direction:column}
-    .type-row button{width:100%}
+
+  .type-row button {
+    width: 100%;
   }
+
+  .stats {
+    gap: 7px;
+  }
+
+  .stat {
+    padding: 11px;
+  }
+
+  .stat strong {
+    font-size: 21px;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <div class="app">
-  <header>
+
+<header>
+  <div>
+    <h1>영어 언스크램블</h1>
+    <p class="subtitle">
+      한글 해석을 보고 영어 문장을 완성하세요.
+    </p>
+  </div>
+
+  <div class="badge">
+    고2 영어Ⅱ · 10문제
+  </div>
+</header>
+
+<section class="panel">
+
+  <div class="topline">
+
     <div>
-      <h1>영어 언스크램블</h1>
-      <p class="subtitle">끊어진 단위를 올바른 순서로 배열하고, 직접 문장도 입력해 보세요.</p>
-    </div>
-    <div class="badge">고2 영어Ⅱ · 10문제</div>
-  </header>
-
-  <section class="panel">
-    <div class="topline">
-      <div>
-        <div class="label">CURRENT QUESTION</div>
-        <div class="question-number" id="questionNumber">1 / 10</div>
-      </div>
-      <div class="actions" style="margin:0">
-        <button class="secondary small" id="shuffleBtn">단위 다시 섞기</button>
-        <button class="secondary small" id="resetBtn">현재 문제 초기화</button>
-      </div>
-    </div>
-    <div class="progress"><div id="progressBar"></div></div>
-
-    <div class="mode-tabs">
-      <button class="tab active" data-mode="click">① 클릭형</button>
-      <button class="tab" data-mode="type">② 직접 입력형</button>
+      <div class="label">CURRENT QUESTION</div>
+      <div class="number" id="questionNumber">1 / 10</div>
     </div>
 
-    <div id="clickMode">
-      <div class="sentence-box">
-        <div class="label">완성한 문장</div>
-        <div id="answerArea" class="answer-area"></div>
-        <div class="hint">아래의 단위를 정답 순서대로 클릭하세요. 완성한 단위를 다시 클릭하면 취소됩니다.</div>
-      </div>
-      <div class="label" style="margin-top:18px">섞인 단위</div>
-      <div id="scrambled" class="scrambled"></div>
-      <div class="actions">
-        <button class="primary" id="checkClickBtn">정답 확인</button>
-        <button class="secondary" id="clearClickBtn">선택 지우기</button>
-      </div>
-      <div id="clickFeedback" class="feedback"></div>
+    <div class="actions" style="margin:0">
+      <button class="secondary small" id="shuffleBtn">
+        단위 다시 섞기
+      </button>
+
+      <button class="secondary small" id="resetBtn">
+        현재 문제 초기화
+      </button>
     </div>
 
-    <div id="typeMode" class="hidden">
-      <div class="sentence-box">
-        <div class="label">영어 문장 직접 입력</div>
-        <div class="hint">대소문자와 문장 끝 마침표는 채점에서 무시합니다.</div>
-        <div class="type-row">
-          <input id="typeInput" type="text" placeholder="영어 문장을 입력하세요.">
-          <button class="primary" id="checkTypeBtn">정답 확인</button>
-        </div>
-      </div>
-      <div id="typeFeedback" class="feedback"></div>
+  </div>
+
+  <div class="progress">
+    <div id="progressBar"></div>
+  </div>
+
+  <div class="tabs">
+
+    <button class="tab active" data-mode="click">
+      ① 클릭형
+    </button>
+
+    <button class="tab" data-mode="type">
+      ② 직접 입력형
+    </button>
+
+  </div>
+
+  <div class="translation">
+
+    <div class="label">한글 해석</div>
+
+    <div class="translation-text" id="translation"></div>
+
+  </div>
+
+  <!-- 클릭형 -->
+
+  <div id="clickMode">
+
+    <div class="section-title">
+      완성한 영어 문장
     </div>
 
-    <div class="bottom">
-      <button class="secondary" id="prevBtn">← 이전 문제</button>
-      <button class="primary" id="nextBtn">다음 문제 →</button>
-    </div>
-  </section>
+    <div id="answerArea" class="answer-area"></div>
 
-  <section class="panel">
-    <div class="label">MY PROGRESS</div>
-    <div class="stats">
-      <div class="stat"><span>확인한 문제</span><strong id="checkedCount">0</strong></div>
-      <div class="stat"><span>맞힌 문제</span><strong id="correctCount">0</strong></div>
-      <div class="stat"><span>정답률</span><strong id="accuracy">0%</strong></div>
+    <div class="hint">
+      아래 단위를 정답 순서대로 클릭하세요.
+      위에 들어간 단위를 다시 클릭하면 취소됩니다.
     </div>
-  </section>
 
-  <details class="panel list-panel">
-    <summary>문제 전체 보기</summary>
-    <div class="sentence-list" id="sentenceList"></div>
-  </details>
+    <div class="section-title">
+      섞인 단위
+    </div>
+
+    <div id="scrambled" class="scrambled"></div>
+
+    <div class="actions">
+
+      <button class="primary" id="checkClickBtn">
+        정답 확인
+      </button>
+
+      <button class="secondary" id="clearClickBtn">
+        선택 지우기
+      </button>
+
+    </div>
+
+    <div id="clickFeedback" class="feedback"></div>
+
+  </div>
+
+  <!-- 직접 입력형 -->
+
+  <div id="typeMode" class="hidden">
+
+    <div class="section-title">
+      영어 문장 직접 입력
+    </div>
+
+    <div class="hint">
+      한글 해석을 보고 영어 문장 전체를 입력하세요.
+      대소문자와 문장 끝 마침표는 채점에서 무시합니다.
+    </div>
+
+    <div class="type-row">
+
+      <input
+        id="typeInput"
+        type="text"
+        placeholder="영어 문장을 입력하세요."
+      >
+
+      <button class="primary" id="checkTypeBtn">
+        정답 확인
+      </button>
+
+    </div>
+
+    <div id="typeFeedback" class="feedback"></div>
+
+  </div>
+
+  <div class="bottom">
+
+    <button class="secondary" id="prevBtn">
+      ← 이전 문제
+    </button>
+
+    <button class="primary" id="nextBtn">
+      다음 문제 →
+    </button>
+
+  </div>
+
+</section>
+
+<section class="panel">
+
+  <div class="label">
+    MY PROGRESS
+  </div>
+
+  <div class="stats">
+
+    <div class="stat">
+      <span>확인한 문제</span>
+      <strong id="checkedCount">0</strong>
+    </div>
+
+    <div class="stat">
+      <span>맞힌 문제</span>
+      <strong id="correctCount">0</strong>
+    </div>
+
+    <div class="stat">
+      <span>정답률</span>
+      <strong id="accuracy">0%</strong>
+    </div>
+
+  </div>
+
+</section>
+
+<details class="panel">
+
+  <summary>문제 전체 보기</summary>
+
+  <div class="sentence-list" id="sentenceList"></div>
+
+</details>
+
 </div>
 
 <script>
+
 const questions = [
+
   {
-    sentence:"When we get an unfavorable outcome, in some ways the last thing we want to hear is that the process was fair.",
-    chunks:["When we get","an unfavorable outcome,","in some ways","the last thing we want to hear","is that the process was fair."]
+    sentence:
+      "When we get an unfavorable outcome, in some ways the last thing we want to hear is that the process was fair.",
+
+    translation:
+      "우리가 불리한 결과를 얻을 때, 어떤 면에서 우리가 ‘가장 듣고 싶지 않은’ 말은 그 과정이 공정했다는 말이다.",
+
+    chunks: [
+      "When we get",
+      "an unfavorable outcome,",
+      "in some ways",
+      "the last thing we want to hear",
+      "is that the process was fair."
+    ]
   },
+
   {
-    sentence:"As that market begins to break down, more and more people will be in danger of not receiving a share of society's prosperity at all.",
-    chunks:["As that market begins to break down,","more and more people will be in danger of","not receiving a share of","society's prosperity at all."]
+    sentence:
+      "As that market begins to break down, more and more people will be in danger of not receiving a share of society's prosperity at all.",
+
+    translation:
+      "그 시장이 무너짐에 따라 점점 더 많은 사람들이 사회의 부의 몫을 전혀 받지 않을 위험에 처하게 될 것이다.",
+
+    chunks: [
+      "As that market begins to break down,",
+      "more and more people will be in danger of",
+      "not receiving a share of",
+      "society's prosperity at all."
+    ]
   },
+
   {
-    sentence:"In problem-solving groups, the participants who are considered the most competent and have the best ideas tend not to be the ones who are best liked.",
-    chunks:["In problem-solving groups,","the participants who are considered","the most competent","and have the best ideas","tend not to be","the ones who are best liked."]
+    sentence:
+      "In problem-solving groups, the participants who are considered the most competent and have the best ideas tend not to be the ones who are best liked.",
+
+    translation:
+      "문제 해결 집단에서, 가장 능력이 있다고 여겨지고 가장 좋은 생각을 가지고 있는 참가자들은 가장 선호되는 사람들이 아닌 경향이 있다.",
+
+    chunks: [
+      "In problem-solving groups,",
+      "the participants who are considered",
+      "the most competent",
+      "and have the best ideas",
+      "tend not to be",
+      "the ones who are best liked."
+    ]
   },
+
   {
-    sentence:"A computational algorithm that takes input data and generates some output from it doesn't really embody any notion of meaning.",
-    chunks:["A computational algorithm","that takes input data","and generates some output from it","doesn't really embody","any notion of meaning."]
+    sentence:
+      "A computational algorithm that takes input data and generates some output from it doesn't really embody any notion of meaning.",
+
+    translation:
+      "입력 데이터를 받아 그것으로부터 어떤 출력을 생성하는 컴퓨터 알고리즘은 실제로 의미라는 그 어떤 개념도 구현하지 않는다.",
+
+    chunks: [
+      "A computational algorithm",
+      "that takes input data",
+      "and generates some output from it",
+      "doesn't really embody",
+      "any notion of meaning."
+    ]
   },
+
   {
-    sentence:"It comes as a surprise to most of us, but hibernation and sleep are not the same thing at all, at least not from a neurological and metabolic perspective.",
-    chunks:["It comes","as a surprise to most of us,","but hibernation and sleep","are not the same thing at all,","at least not from a neurological","and metabolic perspective."]
+    sentence:
+      "It comes as a surprise to most of us, but hibernation and sleep are not the same thing at all, at least not from a neurological and metabolic perspective.",
+
+    translation:
+      "그것은 우리 대부분에게 놀라움으로 다가오지만, 동면과 수면은 적어도 신경학적이고 신진대사적인 관점에서 볼 때 전혀 같은 것이 아니다.",
+
+    chunks: [
+      "It comes",
+      "as a surprise to most of us,",
+      "but hibernation and sleep",
+      "are not the same thing at all,",
+      "at least not from a neurological",
+      "and metabolic perspective."
+    ]
   },
+
   {
-    sentence:"Critics of empathy argue that empathy will not save us from interpersonal and intergroup conflict.",
-    chunks:["Critics of empathy","argue that","empathy will not save us","from interpersonal","and intergroup conflict."]
+    sentence:
+      "Critics of empathy argue that empathy will not save us from interpersonal and intergroup conflict.",
+
+    translation:
+      "공감에 대해 비판하는 사람들은 공감이 사람 간 그리고 집단 간 갈등으로부터 우리를 구해주지 않을 것이라고 주장한다.",
+
+    chunks: [
+      "Critics of empathy",
+      "argue that",
+      "empathy will not save us",
+      "from interpersonal",
+      "and intergroup conflict."
+    ]
   },
+
   {
-    sentence:"It's why the most popular television shows and movies are the ones with unexpected plot twists and astonishing endings.",
-    chunks:["It's why","the most popular television shows","and movies","are the ones","with unexpected plot twists","and astonishing endings."]
+    sentence:
+      "It's why the most popular television shows and movies are the ones with unexpected plot twists and astonishing endings.",
+
+    translation:
+      "그것이 가장 인기 있는 텔레비전 쇼와 영화가 예기치 않은 줄거리의 반전과 놀라운 결말을 가진 것들인 이유다.",
+
+    chunks: [
+      "It's why",
+      "the most popular television shows",
+      "and movies",
+      "are the ones",
+      "with unexpected plot twists",
+      "and astonishing endings."
+    ]
   },
+
   {
-    sentence:"A great strength of the market mechanism is that there are incentives for individuals to reveal their knowledge through their behavior.",
-    chunks:["A great strength","of the market mechanism","is that","there are incentives","for individuals","to reveal their knowledge","through their behavior."]
+    sentence:
+      "A great strength of the market mechanism is that there are incentives for individuals to reveal their knowledge through their behavior.",
+
+    translation:
+      "시장 메커니즘의 한 가지 큰 장점은 사람들이 자신의 행동을 통해 자신이 알고 있는 것을 드러내도록 하는 유인이 있다는 것이다.",
+
+    chunks: [
+      "A great strength",
+      "of the market mechanism",
+      "is that",
+      "there are incentives",
+      "for individuals",
+      "to reveal their knowledge",
+      "through their behavior."
+    ]
   },
+
   {
-    sentence:"Dictionary definitions are constantly revised to keep up with our changing uses and knowledge.",
-    chunks:["Dictionary definitions","are constantly revised","to keep up with","our changing uses","and knowledge."]
+    sentence:
+      "Dictionary definitions are constantly revised to keep up with our changing uses and knowledge.",
+
+    translation:
+      "사전적 정의는 우리의 변화하는 용례와 지식에 뒤처지지 않기 위해 끊임없이 수정된다.",
+
+    chunks: [
+      "Dictionary definitions",
+      "are constantly revised",
+      "to keep up with",
+      "our changing uses",
+      "and knowledge."
+    ]
   },
+
   {
-    sentence:"The shift was much larger than Newton's theory predicted, but exactly in the positions predicted by Einstein's theory.",
-    chunks:["The shift","was much larger","than Newton's theory","predicted,","but exactly","in the positions","predicted by Einstein's theory."]
+    sentence:
+      "The shift was much larger than Newton's theory predicted, but exactly in the positions predicted by Einstein's theory.",
+
+    translation:
+      "그 이동은 뉴턴의 이론이 예측한 것보다 훨씬 컸지만, 아인슈타인의 이론에 의해 예측된 위치에 정확히 있었다.",
+
+    chunks: [
+      "The shift",
+      "was much larger",
+      "than Newton's theory",
+      "predicted,",
+      "but exactly",
+      "in the positions",
+      "predicted by Einstein's theory."
+    ]
   }
+
 ];
 
 let current = 0;
+
 let mode = "click";
+
 let shuffled = [];
+
 let selected = [];
+
 let checked = Array(questions.length).fill(false);
+
 let correct = Array(questions.length).fill(false);
 
 const $ = id => document.getElementById(id);
 
-function normalize(s){
-  return s.toLowerCase()
-    .replace(/[’‘]/g,"'")
-    .replace(/[.!?]+$/g,"")
-    .replace(/\s+/g," ")
+
+// 채점용 정규화
+function normalize(text) {
+
+  return text
+    .toLowerCase()
+    .replace(/[’‘]/g, "'")
+    .replace(/[.!?]+$/g, "")
+    .replace(/\s+/g, " ")
     .trim();
+
 }
-function shuffle(arr){
-  const a = [...arr];
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
+
+
+// 화면에 표시할 단위
+// 첫 단위 대문자 제거
+// 끝 마침표 제거
+function displayChunk(chunk, index) {
+
+  let result = chunk.trim();
+
+  if (index === 0 && result.length > 0) {
+
+    result =
+      result.charAt(0).toLowerCase() +
+      result.slice(1);
+
   }
-  return a;
+
+  result = result.replace(/[.!?]+$/, "");
+
+  return result;
+
 }
-function render(){
-  const q=questions[current];
-  $("questionNumber").textContent=`${current+1} / ${questions.length}`;
-  $("progressBar").style.width=`${((current+1)/questions.length)*100}%`;
-  $("typeInput").value="";
-  $("clickFeedback").className="feedback";
-  $("typeFeedback").className="feedback";
-  selected=[];
-  shuffled=shuffle(q.chunks);
+
+
+// 배열 랜덤 섞기
+function shuffle(array) {
+
+  const result = [...array];
+
+  for (let i = result.length - 1; i > 0; i--) {
+
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [result[i], result[j]] =
+      [result[j], result[i]];
+
+  }
+
+  return result;
+
+}
+
+
+// 문제 불러오기
+function render() {
+
+  const q = questions[current];
+
+  $("questionNumber").textContent =
+    `${current + 1} / ${questions.length}`;
+
+  $("progressBar").style.width =
+    `${((current + 1) / questions.length) * 100}%`;
+
+  $("translation").textContent =
+    q.translation;
+
+  $("typeInput").value = "";
+
+  $("clickFeedback").className = "feedback";
+
+  $("typeFeedback").className = "feedback";
+
+  selected = [];
+
+  shuffled = shuffle(
+
+    q.chunks.map((chunk, index) => ({
+
+      original: chunk,
+
+      display: displayChunk(chunk, index)
+
+    }))
+
+  );
+
   renderChunks();
+
   renderStats();
+
   renderList();
+
 }
-function renderChunks(){
-  const q=questions[current];
-  $("answerArea").innerHTML="";
-  selected.forEach((chunk,index)=>{
-    const b=document.createElement("button");
-    b.className="chunk answer";
-    b.textContent=chunk;
-    b.title="클릭해서 취소";
-    b.addEventListener("click",()=>{
-      selected.splice(index,1);
+
+
+// 단위 화면 출력
+function renderChunks() {
+
+  $("answerArea").innerHTML = "";
+
+  selected.forEach((item, index) => {
+
+    const button = document.createElement("button");
+
+    button.className = "chunk answer";
+
+    button.textContent = item.display;
+
+    button.title = "클릭해서 취소";
+
+    button.addEventListener("click", () => {
+
+      selected.splice(index, 1);
+
       renderChunks();
+
     });
-    $("answerArea").appendChild(b);
+
+    $("answerArea").appendChild(button);
+
   });
-  if(selected.length===0){
-    const empty=document.createElement("span");
-    empty.style.color="#94a3b8";
-    empty.textContent="여기에 정답 단위가 순서대로 들어갑니다.";
+
+
+  if (selected.length === 0) {
+
+    const empty = document.createElement("span");
+
+    empty.style.color = "#94a3b8";
+
+    empty.textContent =
+      "여기에 정답 단위가 순서대로 들어갑니다.";
+
     $("answerArea").appendChild(empty);
+
   }
-  $("scrambled").innerHTML="";
-  shuffled.forEach((chunk)=>{
-    const b=document.createElement("button");
-    b.className="chunk"+(selected.includes(chunk)?" used":"");
-    b.textContent=chunk;
-    b.disabled=selected.includes(chunk);
-    b.addEventListener("click",()=>{
-      if(!selected.includes(chunk)){
-        selected.push(chunk);
+
+
+  $("scrambled").innerHTML = "";
+
+  shuffled.forEach(item => {
+
+    const button = document.createElement("button");
+
+    button.className =
+      "chunk" +
+      (selected.includes(item) ? " used" : "");
+
+    button.textContent = item.display;
+
+    button.disabled = selected.includes(item);
+
+    button.addEventListener("click", () => {
+
+      if (!selected.includes(item)) {
+
+        selected.push(item);
+
         renderChunks();
+
       }
+
     });
-    $("scrambled").appendChild(b);
+
+    $("scrambled").appendChild(button);
+
   });
+
 }
-function showFeedback(id,good,msg){
-  const el=$(id);
-  el.className="feedback "+(good?"good":"bad");
-  el.innerHTML=msg;
+
+
+// 피드백 출력
+function showFeedback(id, isGood, message) {
+
+  const element = $(id);
+
+  element.className =
+    "feedback " + (isGood ? "good" : "bad");
+
+  element.textContent = message;
+
 }
-function checkClick(){
-  const answer=selected.join(" ");
-  if(normalize(answer)===normalize(questions[current].sentence)){
-    checked[current]=true;correct[current]=true;
-    showFeedback("clickFeedback",true,"정답입니다! 🎉");
-  }else{
-    checked[current]=true;
-    correct[current]=false;
-    showFeedback("clickFeedback",false,"아직 정답이 아닙니다. 단위의 순서를 다시 확인해 보세요.");
+
+
+// 클릭형 채점
+function checkClick() {
+
+  const answer =
+    selected.map(item => item.original).join(" ");
+
+  if (
+    normalize(answer) ===
+    normalize(questions[current].sentence)
+  ) {
+
+    checked[current] = true;
+
+    correct[current] = true;
+
+    showFeedback(
+      "clickFeedback",
+      true,
+      "정답입니다! 🎉"
+    );
+
+  } else {
+
+    checked[current] = true;
+
+    correct[current] = false;
+
+    showFeedback(
+      "clickFeedback",
+      false,
+      "아직 정답이 아닙니다. 단위의 순서를 다시 확인해 보세요."
+    );
+
   }
+
   renderStats();
+
+  renderList();
+
 }
-function checkType(){
-  const answer=$("typeInput").value;
-  if(normalize(answer)===normalize(questions[current].sentence)){
-    checked[current]=true;correct[current]=true;
-    showFeedback("typeFeedback",true,"정답입니다! 🎉");
-  }else{
-    checked[current]=true;correct[current]=false;
-    showFeedback("typeFeedback",false,"아직 정답이 아닙니다. 문장 순서와 철자를 확인해 보세요.");
+
+
+// 직접 입력형 채점
+function checkType() {
+
+  const answer = $("typeInput").value;
+
+  if (
+    normalize(answer) ===
+    normalize(questions[current].sentence)
+  ) {
+
+    checked[current] = true;
+
+    correct[current] = true;
+
+    showFeedback(
+      "typeFeedback",
+      true,
+      "정답입니다! 🎉"
+    );
+
+  } else {
+
+    checked[current] = true;
+
+    correct[current] = false;
+
+    showFeedback(
+      "typeFeedback",
+      false,
+      "아직 정답이 아닙니다. 문장 순서와 철자를 확인해 보세요."
+    );
+
   }
+
   renderStats();
+
+  renderList();
+
 }
-function renderStats(){
-  const checkedCount=checked.filter(Boolean).length;
-  const correctCount=correct.filter(Boolean).length;
-  $("checkedCount").textContent=checkedCount;
-  $("correctCount").textContent=correctCount;
-  $("accuracy").textContent=checkedCount?Math.round(correctCount/checkedCount*100)+"%":"0%";
+
+
+// 통계 출력
+function renderStats() {
+
+  const checkedCount =
+    checked.filter(Boolean).length;
+
+  const correctCount =
+    correct.filter(Boolean).length;
+
+  $("checkedCount").textContent =
+    checkedCount;
+
+  $("correctCount").textContent =
+    correctCount;
+
+  $("accuracy").textContent =
+    checkedCount
+      ? Math.round(correctCount / checkedCount * 100) + "%"
+      : "0%";
+
 }
-function renderList(){
-  $("sentenceList").innerHTML="";
-  questions.forEach((q,i)=>{
-    const div=document.createElement("div");
-    div.className="sentence-item";
-    const status=checked[i]?(correct[i]?"✅ 맞힘":"🔁 다시 연습"):"⬜ 미확인";
-    div.innerHTML=`<strong>${i+1}번</strong><small>${status}<br>${q.sentence}</small>`;
-    div.style.cursor="pointer";
-    div.addEventListener("click",()=>{current=i;render();window.scrollTo({top:0,behavior:"smooth"});});
-    $("sentenceList").appendChild(div);
+
+
+// 문제 전체 보기
+function renderList() {
+
+  $("sentenceList").innerHTML = "";
+
+  questions.forEach((q, index) => {
+
+    const item = document.createElement("div");
+
+    item.className = "sentence-item";
+
+    const status =
+      checked[index]
+        ? correct[index]
+          ? "✅ 맞힘"
+          : "🔁 다시 연습"
+        : "⬜ 미확인";
+
+    item.innerHTML =
+      `<strong>${index + 1}번</strong>
+       <small>${status}<br>${q.translation}</small>`;
+
+    item.addEventListener("click", () => {
+
+      current = index;
+
+      render();
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    });
+
+    $("sentenceList").appendChild(item);
+
   });
+
 }
-function setMode(next){
-  mode=next;
-  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.mode===mode));
-  $("clickMode").classList.toggle("hidden",mode!=="click");
-  $("typeMode").classList.toggle("hidden",mode!=="type");
+
+
+// 모드 변경
+function setMode(nextMode) {
+
+  mode = nextMode;
+
+  document.querySelectorAll(".tab").forEach(button => {
+
+    button.classList.toggle(
+      "active",
+      button.dataset.mode === mode
+    );
+
+  });
+
+  $("clickMode").classList.toggle(
+    "hidden",
+    mode !== "click"
+  );
+
+  $("typeMode").classList.toggle(
+    "hidden",
+    mode !== "type"
+  );
+
 }
-document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>setMode(b.dataset.mode)));
-$("checkClickBtn").addEventListener("click",checkClick);
-$("checkTypeBtn").addEventListener("click",checkType);
-$("clearClickBtn").addEventListener("click",()=>{selected=[];renderChunks();});
-$("shuffleBtn").addEventListener("click",()=>{shuffled=shuffle(questions[current].chunks);renderChunks();});
-$("resetBtn").addEventListener("click",render);
-$("prevBtn").addEventListener("click",()=>{current=(current-1+questions.length)%questions.length;render();});
-$("nextBtn").addEventListener("click",()=>{current=(current+1)%questions.length;render();});
-$("typeInput").addEventListener("keydown",e=>{if(e.key==="Enter")checkType();});
+
+
+// 이벤트 연결
+
+document.querySelectorAll(".tab").forEach(button => {
+
+  button.addEventListener(
+    "click",
+    () => setMode(button.dataset.mode)
+  );
+
+});
+
+$("checkClickBtn").addEventListener(
+  "click",
+  checkClick
+);
+
+$("checkTypeBtn").addEventListener(
+  "click",
+  checkType
+);
+
+$("clearClickBtn").addEventListener(
+  "click",
+  () => {
+
+    selected = [];
+
+    renderChunks();
+
+  }
+);
+
+
+// 단위 다시 섞기
+$("shuffleBtn").addEventListener(
+  "click",
+  () => {
+
+    shuffled = shuffle(
+
+      questions[current].chunks.map((chunk, index) => ({
+
+        original: chunk,
+
+        display: displayChunk(chunk, index)
+
+      }))
+
+    );
+
+    selected = [];
+
+    renderChunks();
+
+    $("clickFeedback").className = "feedback";
+
+  }
+);
+
+
+// 현재 문제 초기화
+$("resetBtn").addEventListener(
+  "click",
+  render
+);
+
+
+// 이전 문제
+$("prevBtn").addEventListener(
+  "click",
+  () => {
+
+    current =
+      (current - 1 + questions.length) %
+      questions.length;
+
+    render();
+
+  }
+);
+
+
+// 다음 문제
+$("nextBtn").addEventListener(
+  "click",
+  () => {
+
+    current =
+      (current + 1) % questions.length;
+
+    render();
+
+  }
+);
+
+
+// 직접 입력에서 Enter
+$("typeInput").addEventListener(
+  "keydown",
+  event => {
+
+    if (event.key === "Enter") {
+
+      checkType();
+
+    }
+
+  }
+);
+
+
+// 최초 실행
 render();
+
 </script>
+
 </body>
 </html>
