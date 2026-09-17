@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -89,6 +90,7 @@ h1 {
 
 .progress div {
   height: 100%;
+  width: 10%;
   background: linear-gradient(90deg, #4263eb, #5cdbb0);
   transition: width .25s;
 }
@@ -142,7 +144,9 @@ button:disabled {
   font-size: 13px;
 }
 
+/* 한글 해석 */
 .translation {
+  display: block !important;
   margin-top: 20px;
   padding: 17px 18px;
   background: #fff9e8;
@@ -157,8 +161,11 @@ button:disabled {
 }
 
 .translation-text {
+  display: block !important;
+  color: #172033;
   font-size: 17px;
   font-weight: bold;
+  line-height: 1.8;
 }
 
 .section-title {
@@ -425,11 +432,15 @@ input {
 
   </div>
 
-  <div class="translation">
+  <!-- 이 부분이 언스크램블할 때 항상 보이는 한글 해석 -->
 
-    <div class="label">한글 해석</div>
+  <div class="translation" id="translationBox">
 
-    <div class="translation-text" id="translation"></div>
+    <div class="label">📖 한글 해석</div>
+
+    <div class="translation-text" id="translation">
+      한글 해석이 여기에 표시됩니다.
+    </div>
 
   </div>
 
@@ -561,7 +572,7 @@ const questions = [
       "When we get an unfavorable outcome, in some ways the last thing we want to hear is that the process was fair.",
 
     translation:
-      "우리가 불리한 결과를 얻을 때, 어떤 면에서 우리가 ‘가장 듣고 싶지 않은’ 말은 그 과정이 공정했다는 말이다.",
+      "우리가 불리한 결과를 얻을 때, 어떤 면에서 우리가 가장 듣고 싶지 않은 말은 그 과정이 공정했다는 말이다.",
 
     chunks: [
       "When we get",
@@ -804,6 +815,7 @@ function render() {
   $("progressBar").style.width =
     `${((current + 1) / questions.length) * 100}%`;
 
+  // 한글 해석은 문제를 바꿀 때마다 항상 표시
   $("translation").textContent =
     q.translation;
 
